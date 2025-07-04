@@ -1,0 +1,34 @@
+name: Deploy Static Site
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Disable Jekyll
+        run: echo "Disabled" > .nojekyll
+
+      - name: Upload
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "." # Корень репозитория
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
